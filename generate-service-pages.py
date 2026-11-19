@@ -18,6 +18,70 @@ pages=[
 ('swelling-abscess','Dental Swelling or Abscess','Concerned about dental swelling','in Leesburg?', 'Contact our team about dental swelling or an abscess so we can discuss your next step.', [7,4,6]),
 ('new-patient','New Patient Dentist','Looking for a new dentist','in Leesburg?', 'We welcome new patients and make it easy to take the first step toward your dental visit.', [0,4,8]),
 ]
+
+service_titles={
+ 'checkup-exam':'Our dental checkup and exam services',
+ 'teeth-cleaning':'Our teeth cleaning services',
+ 'lost-filling-crown':'Our lost filling and crown services',
+ 'tooth-pain':'Our tooth pain services',
+ 'emergency-dentist':'Our dental emergency services',
+ 'broken-cracked-tooth':'Our broken and cracked tooth services',
+ 'wisdom-teeth':'Our wisdom teeth services',
+ 'swelling-abscess':'Our dental swelling and abscess services',
+ 'new-patient':'Our new patient dental services',
+}
+questions={
+ 'checkup-exam':[
+  ('What happens at a dental checkup?', 'Your dental team will review your oral health, examine your teeth and gums, and discuss any concerns or recommendations with you.'),
+  ('How often should I have a dental exam?', 'Your dentist can recommend a schedule based on your oral health and individual needs.'),
+  ('Can I discuss a dental concern during my checkup?', 'Yes. Let your dental team know about any changes, discomfort, or questions you have.'),
+  ('Is a cleaning part of my visit?', 'Your care depends on your needs and appointment. Ask our team what is planned when you schedule.')],
+ 'teeth-cleaning':[
+  ('What happens during a professional teeth cleaning?', 'A dental professional cleans your teeth and can discuss your oral hygiene routine and any concerns you have.'),
+  ('How often should I have my teeth cleaned?', 'Your dental team can suggest a cleaning schedule based on your oral health.'),
+  ('Can I schedule an exam with my cleaning?', 'Contact our team to discuss the right appointment for your needs, including an exam and cleaning.'),
+  ('What if I have sensitive teeth?', 'Let your dental team know before your visit so they can discuss your concerns and approach to care.')],
+ 'lost-filling-crown':[
+  ('What should I do if I lose a filling or crown?', 'Call our office to explain what happened. Our team can help you arrange an evaluation and discuss next steps.'),
+  ('Can a lost crown be put back on?', 'That depends on the condition of the crown and tooth. The dentist will assess them and discuss your options.'),
+  ('What if my tooth hurts after a filling or crown comes out?', 'Call us and tell the team about your symptoms so they can help you determine the next step.'),
+  ('Will I need a new filling or crown?', 'Your dentist will examine the tooth and recommend treatment based on its condition.')],
+ 'tooth-pain':[
+  ('What should I do if I have a toothache?', 'Call our office and describe your symptoms. Our team can help you arrange an evaluation.'),
+  ('What can cause tooth pain?', 'Tooth pain can have several causes. An examination helps the dentist assess your concern and discuss possible treatment.'),
+  ('Can you help with urgent tooth pain?', 'Our practice offers emergency dental care. Call us to discuss your symptoms and appointment options.'),
+  ('What happens during a tooth pain appointment?', 'Your dentist will assess the area, discuss your symptoms, and explain appropriate next steps.')],
+ 'emergency-dentist':[
+  ('What dental emergencies can you help with?', 'Our team can assess urgent concerns such as tooth pain, a broken tooth, or a lost filling or crown. Call us to discuss your situation.'),
+  ('How do I request an emergency dental appointment?', 'Call our team at (703) 771-2670 and describe your concern so we can discuss appointment options.'),
+  ('What happens at an emergency dental visit?', 'Your dentist will assess your concern and discuss the appropriate next steps and treatment options.'),
+  ('Can new patients contact you for an urgent concern?', 'Yes. Call our office to tell us what is happening and ask about an appointment.')],
+ 'broken-cracked-tooth':[
+  ('What should I do if I break or crack a tooth?', 'Call our office to describe what happened. Our team can help you arrange an evaluation.'),
+  ('Can a cracked tooth be repaired?', 'Treatment depends on the location and extent of the damage. Your dentist will examine the tooth and discuss your options.'),
+  ('What if my broken tooth does not hurt?', 'A dental examination can help determine the condition of the tooth, even when there is no pain.'),
+  ('Can you see me for an urgent broken tooth?', 'Our practice offers emergency dental care. Call us to discuss your concern and appointment options.')],
+ 'wisdom-teeth':[
+  ('How do I know if my wisdom teeth need to be removed?', 'Your dentist can evaluate your wisdom teeth and discuss whether removal or another approach is appropriate for you.'),
+  ('Does everyone need their wisdom teeth removed?', 'Not necessarily. The recommendation depends on your individual situation and dental evaluation.'),
+  ('What happens during a wisdom teeth consultation?', 'Your dentist will assess your wisdom teeth, discuss your concerns, and explain possible next steps.'),
+  ('What if my wisdom teeth are causing discomfort?', 'Call our office and tell the team about your symptoms so we can discuss an evaluation.')],
+ 'swelling-abscess':[
+  ('What should I do about dental swelling or a possible abscess?', 'Call our office and describe your symptoms. Our team can help you arrange an evaluation and discuss next steps.'),
+  ('Can you help with an urgent dental concern?', 'Our practice offers emergency dental care. Call us to discuss your symptoms and appointment options.'),
+  ('What happens when I come in for swelling?', 'Your dentist will assess the area, discuss your symptoms, and explain appropriate next steps.'),
+  ('Will I need treatment for an abscess?', 'Treatment depends on the diagnosis. Your dentist will explain your options after an evaluation.')],
+ 'new-patient':[
+  ('Are you accepting new patients?', 'Yes. Russell Branch Dental welcomes new patients of all ages. Call or use the online booking link to get started.'),
+  ('What can I expect at my first visit?', 'Your dental team will discuss your concerns, review your oral health, and explain any recommended next steps.'),
+  ('Can I schedule a cleaning as a new patient?', 'Contact our team to discuss the right first appointment for your needs, including an exam and cleaning.'),
+  ('Do you see patients of all ages?', 'Yes. Our practice welcomes new patients of all ages.')],
+}
+general_questions=[
+ ('Where is your Leesburg office?', 'We are located at 135 Robinson Mill Plaza SE, Unit 108, Leesburg, VA 20175.'),
+ ('Do you offer financing?', 'The practice offers financing options through CareCredit and Sunbit. Contact our team for details and eligibility.'),
+]
+
 hero='Looking for a dentist <span class="accent">in Leesburg?</span>'
 intro='Meet your Leesburg dentist for thoughtful, comprehensive care and a smile that feels like you.'
 for slug,title,line1,line2,description,selected in pages:
@@ -25,6 +89,12 @@ for slug,title,line1,line2,description,selected in pages:
  page=page.replace('content="Comfortable, comprehensive dental care for your family in Leesburg, Virginia."',f'content="{escape(description, quote=True)}"')
  page=page.replace(hero,escape(line1)+' <span class="accent">'+escape(line2)+'</span>')
  page=page.replace(intro,escape(description))
+ page=page.replace('Our services, <span class="accent">centered on you.</span>', escape(service_titles[slug])+', <span class="accent">centered on you.</span>')
+ faq_start=page.index('<div class="faq-list">')+len('<div class="faq-list">')
+ faq_end=page.index('</div></div></section><section class="office"', faq_start)
+ faq=''.join('<details><summary>'+escape(q)+'</summary><p>'+escape(answer)+'</p></details>' for q,answer in questions[slug]+general_questions)
+ page=page[:faq_start]+faq+page[faq_end:]
+
  a=page.index('<div class="services-grid">')+len('<div class="services-grid">');b=page.index('</div><div class="services-cta">',a)
  page=page[:a]+''.join(cards[i] for i in selected)+page[b:]
  page=page.replace('src="assets/', 'src="/assets/')
