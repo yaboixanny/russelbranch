@@ -16,7 +16,7 @@ pages=[
 ('broken-cracked-tooth','Broken or Cracked Tooth','Have a broken or cracked tooth','in Leesburg?', 'Our dental team can evaluate your tooth and help you understand your treatment options.', [7,4,6]),
 ('wisdom-teeth','Wisdom Teeth Removal','Looking for wisdom teeth care','in Leesburg?', 'Get a thoughtful assessment and a care plan tailored to your wisdom teeth.', [2,6,4]),
 ('swelling-abscess','Dental Swelling or Abscess','Concerned about dental swelling','in Leesburg?', 'Contact our team about dental swelling or an abscess so we can discuss your next step.', [7,4,6]),
-('new-patient','New Patient Dentist','Looking for a new dentist','in Leesburg?', 'We welcome new patients and make it easy to take the first step toward your dental visit.', [0,4,8]),
+('new-patient','New Patient Dentist','Looking for a new dentist','in Leesburg?', 'We welcome new patients and make it easy to take the first step toward your dental visit.', [0,8,7]),
 ]
 
 service_titles={
@@ -96,7 +96,10 @@ for slug,title,line1,line2,description,selected in pages:
  page=page[:faq_start]+faq+page[faq_end:]
 
  a=page.index('<div class="services-grid">')+len('<div class="services-grid">');b=page.index('</div><div class="services-cta">',a)
- page=page[:a]+''.join(cards[i] for i in selected)+page[b:]
+ selected_cards=[cards[i] for i in selected]
+ if slug=='new-patient':
+  selected_cards[0]=selected_cards[0].replace('<h3>Family dentistry</h3>', '<h3>Family dentistry &amp; dental exams</h3>').replace("Care for every stage of your family&#x27;s smile.", "Family dental care and exams for every stage of your smile.").replace('Preventive care and treatment planning', 'Dental exams and preventive care')
+ page=page[:a]+''.join(selected_cards)+page[b:]
  page=page.replace('src="assets/', 'src="/assets/')
  out=root/'dist'/slug/'index.html';out.parent.mkdir(parents=True,exist_ok=True);out.write_text(page,encoding='utf-8')
  print(f'{slug}: '+', '.join(re.search(r'<h3>(.*?)</h3>',cards[i]).group(1) for i in selected))
