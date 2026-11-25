@@ -92,7 +92,7 @@ for slug,title,line1,line2,description,selected in pages:
  page=page.replace('Our services, <span class="accent">centered on you.</span>', escape(service_titles[slug])+', <span class="accent">centered on you.</span>')
  faq_start=page.index('<div class="faq-list">')+len('<div class="faq-list">')
  faq_end=page.index('</div></div></section><section class="office"', faq_start)
- faq=''.join('<details><summary>'+escape(q)+'</summary><p>'+escape(answer)+'</p></details>' for q,answer in questions[slug]+general_questions)
+ faq=''.join('<details><summary>'+escape(q)+'</summary><p>'+escape(answer).replace('(703) 771-2670', '<span data-practice-phone>(703) 771-2670</span>')+'</p></details>' for q,answer in questions[slug]+general_questions)
  page=page[:faq_start]+faq+page[faq_end:]
 
  a=page.index('<div class="services-grid">')+len('<div class="services-grid">');b=page.index('</div><div class="services-cta">',a)
