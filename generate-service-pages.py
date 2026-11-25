@@ -82,6 +82,54 @@ general_questions=[
  ('Do you offer financing?', 'The practice offers financing options through CareCredit and Sunbit. Contact our team for details and eligibility.'),
 ]
 
+
+emergency_pages = {
+    'lost-filling-crown', 'tooth-pain', 'emergency-dentist',
+    'broken-cracked-tooth', 'swelling-abscess',
+}
+emergency_services = [
+    ('Tooth pain', 'emergency-patient.webp', 'Tell us where it hurts and when it started so our team can arrange an evaluation.'),
+    ('Broken or cracked tooth', 'emergency-dental.jpg', 'We can examine the damage and talk through options for repairing or treating the tooth.'),
+    ('Wisdom tooth problem', 'wisdom-teeth.jpg', 'We can assess painful or irritated wisdom teeth and discuss whether oral surgery is appropriate.'),
+    ('Swelling', 'dental-swelling.webp', 'Let our team know where you notice swelling so we can discuss the next step.'),
+    ('Dental infection', 'root-canal.webp', 'We can examine the affected area and explain your treatment options.'),
+    ('Knocked-out tooth', 'knocked-out-tooth.webp', 'Call us right away to discuss an urgent dental visit.'),
+    ('Lost crown or filling', 'lost-dental-crown.webp', 'We can check the tooth and talk through options for restoring it.'),
+]
+
+
+def emergency_card(title, image, description):
+    return (
+        '<article class="service-card"><div class="service-art" aria-hidden="true">'
+        f'<img src="assets/services/{image}" alt="" loading="lazy"></div>'
+        f'<h3>{escape(title)}</h3><p>{escape(description)}</p></article>'
+    )
+
+
+def tailor_emergency_page(page):
+    page = page.replace('<section class="team" id="dentists">', '<section class="team emergency-team" id="dentists">')
+    page = page.replace('Get to know the team behind your smile.', 'Meet the doctors who provide emergency dental care at Russell Branch Dental.')
+    for name in ('Dr. Afsaneh Rangiani', 'Dr. Gia Duong'):
+        page = re.sub(r'<article class="team-card">(?:(?!</article>).)*?<h3>' + re.escape(name) + r'</h3>.*?</article>', '', page, count=1, flags=re.S)
+    page = page.replace('He is a national implant surgery educator.</p>',
+        'He is a national implant surgery educator. For emergency visits, he evaluates the problem and explains the treatment options and next steps.</p>')
+    page = page.replace('including wisdom teeth extractions under deep sedation.</p>',
+        'including wisdom teeth extractions under deep sedation. He evaluates urgent concerns that may need oral surgery and discusses the available options.</p>')
+    page = page.replace('<li><span class="check">✓</span>Family, cosmetic &amp; emergency dentistry</li>', '')
+    page = page.replace('Come smile with us.', "Let’s take care of your dental emergency.")
+    page = page.replace('Tell us a little about yourself and take the first step toward your visit.',
+        'Choose the reason for your visit, then continue to online booking.')
+    options = '<option value="">Select a reason for your visit</option>'
+    options += ''.join(f'<option>{escape(reason)}</option>' for reason in [item[0] for item in emergency_services] + ['Something else'])
+    page, count = re.subn(r'(<select id="(?:modal-)?visit"[^>]*>).*?(</select>)',
+        lambda match: match[1] + options + match[2], page, flags=re.S)
+    assert count == 2
+    page = page.replace('CARE FOR YOUR WHOLE SMILE', 'EMERGENCY DENTAL CARE').replace('Care for your whole smile', 'Emergency dental care')
+    page = page.replace('From routine visits to unexpected concerns, find thoughtful dental care for every stage of your smile.',
+        'From sudden tooth pain to a lost crown, see the urgent dental concerns we can help with.')
+    return page.replace('</style>', '\n@media(min-width: 561px){.emergency-team .team-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-width:820px;margin-inline:auto}}</style>', 1)
+
+
 hero='Looking for a dentist <span class="accent">in Leesburg?</span>'
 intro='Meet your Leesburg dentist for thoughtful, comprehensive care and a smile that feels like you.'
 for slug,title,line1,line2,description,selected in pages:
@@ -96,8 +144,11 @@ for slug,title,line1,line2,description,selected in pages:
  page=page[:faq_start]+faq+page[faq_end:]
 
  a=page.index('<div class="services-grid">')+len('<div class="services-grid">');b=page.index('</div><div class="services-cta">',a)
- selected_cards=[cards[i] for i in selected]
+ selected_cards = ([emergency_card(*service) for service in emergency_services]
+                   if slug in emergency_pages else [cards[i] for i in selected])
  page=page[:a]+''.join(selected_cards)+page[b:]
+ if slug in emergency_pages:
+  page = tailor_emergency_page(page)
  page=page.replace('src="assets/', 'src="/assets/')
  out=root/'dist'/slug/'index.html';out.parent.mkdir(parents=True,exist_ok=True);out.write_text(page,encoding='utf-8')
- print(f'{slug}: '+', '.join(re.search(r'<h3>(.*?)</h3>',cards[i]).group(1) for i in selected))
+ print(f'{slug}: '+', '.join(re.search(r'<h3>(.*?)</h3>',card).group(1) for card in selected_cards))
